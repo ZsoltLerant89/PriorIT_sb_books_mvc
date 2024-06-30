@@ -58,47 +58,56 @@ public class AppService {
 	{
 		boolean result = false;
 		String message = "";
+		ResultDTO resultDTO = null;
 		
-		if((isEmpty(isbn) == false) && (isEmpty(title) == false))
-		{
-			if(isbnValidator(isbn) == true)
+		try {
+		
+			if((isEmpty(isbn) == false) && (isEmpty(title) == false))
 			{
-				Book book = new Book(	isbn,
-										title,
-										publishYear,
-										pages,
-										language,
-										genre
-										);
-				
-				result = true;
-				message = null;
-				
-				db.registerABook(book);
+				if(isbnValidator(isbn) == true)
+				{
+					Book book = new Book(	isbn,
+											title,
+											publishYear,
+											pages,
+											language,
+											genre
+											);
+					
+					result = true;
+					message = "The book has been successfully registered!";
+					
+					db.registerABook(book);
+				}
+				else
+				{
+					message = "Invalid ISBN number!";
+				}
 			}
 			else
 			{
-				message = "Invalid ISBN number!";
+				message = "* marked fields must be filled! ";
+			}
+			
+			
+			ResultDTO bookListResultDTO = getBooks();
+			
+			if(bookListResultDTO.isAllBooksResult() == true)
+			{
+				BookListDTO bookListDTO = bookListResultDTO.getBookListDTO();
+				
+				resultDTO = new ResultDTO(bookListDTO,result,true,message);
+			}
+			else
+			{
+				resultDTO = new ResultDTO(null,result,false,bookListResultDTO.getMessage());
 			}
 		}
-		else
+		catch(org.hibernate.exception.ConstraintViolationException e)
 		{
-			message = "* marked fields must be filled! ";
-		}
-		
-		
-		ResultDTO bookListResultDTO = getBooks();
-		ResultDTO resultDTO = null;
-		
-		if(bookListResultDTO.isAllBooksResult() == true)
-		{
-			BookListDTO bookListDTO = bookListResultDTO.getBookListDTO();
+			message ="ISBN number is alredy registered!";
 			
-			resultDTO = new ResultDTO(bookListDTO,result,true,message);
-		}
-		else
-		{
-			resultDTO = new ResultDTO(null,result,false,bookListResultDTO.getMessage());
+			resultDTO = new ResultDTO(null,false,false,message);
 		}
 		
 		return resultDTO;
@@ -122,7 +131,7 @@ public class AppService {
 		return result;
 	}
 	
-	public boolean isEmpty(String input)
+	private boolean isEmpty(String input)
 	{
 		boolean result = false;
 		if(input.length() == 0)

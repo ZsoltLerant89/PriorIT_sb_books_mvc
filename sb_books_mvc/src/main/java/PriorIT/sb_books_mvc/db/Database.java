@@ -48,7 +48,7 @@ public class Database {
 		Transaction tx = session.beginTransaction();
 	
 		session.persist(book);
-		System.out.println("reg ok");
+	
 		tx.commit();
 		session.close();
 		
