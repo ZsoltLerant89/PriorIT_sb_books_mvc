@@ -4,12 +4,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import PriorIT.sb_books_mvc.db.Database;
 import PriorIT.sb_books_mvc.dto.BookDTO;
 import PriorIT.sb_books_mvc.dto.BookListDTO;
 import PriorIT.sb_books_mvc.dto.ResultDTO;
 import PriorIT.sb_books_mvc.model.Book;
+import PriorIT.sb_books_mvc.model.OpenLib;
+import PriorIT.sb_books_mvc.model.OpenLibData;
 
 
 @Service
@@ -32,12 +35,16 @@ public class AppService {
 		for(int index = 0; index < bookList.size(); index++)
 		{
 			Book currentBook = bookList.get(index);
+			
+			Double compensation = compensation(currentBook.getPages(),currentBook.getPublishYear(),currentBook.getLanguage());
+			
 			BookDTO currentBookDTO = new BookDTO(currentBook.getIsbn(),
 												 currentBook.getTitle(),
 												 currentBook.getPublishYear(),
 												 currentBook.getPages(),
 												 currentBook.getLanguage(),
-												 currentBook.getGenre()
+												 currentBook.getGenre(),
+												 compensation
 												 );
 			
 			bookListDTO.addToBooks(currentBookDTO);
@@ -66,6 +73,19 @@ public class AppService {
 			{
 				if(isbnValidator(isbn) == true)
 				{
+					
+					RestTemplate rt = new RestTemplate();
+					OpenLib openLib = rt.getForObject("https://openlibrary.org/search.json?isbn=" + isbn, OpenLib.class);
+					
+					if(openLib.getDocs().size() > 0)
+					{
+						OpenLibData openLibDataList = openLib.getDocs().get(0);
+						Integer OpenLibFirstPublishYear = openLibDataList.getFirst_publish_year();
+						Integer OpenLibNumberOfPagesMedian = openLibDataList.getNumber_of_pages_median();
+						String OpenLibPublisher = openLibDataList.getPublisher().get(0);
+						String OpenLibLanguage = openLibDataList.getLanguage().get(0);
+					}
+					
 					Book book = new Book(	isbn,
 											title,
 											publishYear,
@@ -76,6 +96,9 @@ public class AppService {
 					
 					result = true;
 					message = "The book has been successfully registered!";
+					
+					
+					System.out.println(compensation(pages, publishYear, language));
 					
 					db.registerABook(book);
 				}
@@ -141,5 +164,65 @@ public class AppService {
 		
 		return result;
 	}
+	
+	private double factor(int pages)
+	{
 		
+		double factor = 0;
+
+		if ((pages > 0) && (pages <50))
+		{
+			factor = 0.7;
+		}
+		else if((pages > 49) && (pages < 100))
+		{
+			factor = 1;
+		}
+		else if((pages > 99) && (pages < 200))
+		{
+			factor = 1.1;
+		}
+		else if((pages > 199) && (pages < 300))
+		{
+			factor = 1.2;
+		}
+		else if((pages > 299) && (pages < 500))
+		{
+			factor = 1.3;
+		}
+		else
+		{
+			factor = 1.5;
+		}
+
+		return factor;
+	}
+	
+	private double compensation(Integer pages, Integer publishYear, String language)
+	{
+		
+		double basicAmount = 100;
+		double compensation = 0;
+		double supplement = 0;
+		
+		if (publishYear != null && (isEmpty(language) == false) && (pages != null))
+		{
+			if (publishYear < 1990)
+			{
+				supplement+= 15;	
+			}
+			
+			if(language.equals("de"))
+			{
+				supplement+= ((basicAmount * 1.1) - basicAmount);
+				
+			}
+			
+			compensation = (basicAmount*factor(pages)) + supplement;
+		}
+		
+		return compensation;
+	}
+	
+	
 }

@@ -53,6 +53,7 @@
 				<th>Pages</th>
 				<th>Language</th>
 				<th>Genre</th>
+				<th>Compensation</th>
 			</tr>
 			<tr th:each="book : ${resultDTO.getBookListDTO().getBooks()}">
 				<td th:text="${book.getIsbn()}"></td>
@@ -61,6 +62,7 @@
 				<td th:text="${book.getPages()}"></td>
 				<td th:text="${book.getLanguage()}"></td>
 				<td th:text="${book.getGenre()}"></td>
+				<td th:text="${book.getCompensation()}"></td>
 			</tr>
 		</table>
 		

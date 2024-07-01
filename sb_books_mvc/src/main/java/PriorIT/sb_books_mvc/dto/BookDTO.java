@@ -1,5 +1,7 @@
 package PriorIT.sb_books_mvc.dto;
 
+import java.text.DecimalFormat;
+
 public class BookDTO {
 
 	private String isbn;
@@ -13,13 +15,16 @@ public class BookDTO {
 	private String language;
 	
 	private String genre;
+	
+	private double compensation;
 
 	public BookDTO(String isbn,
 			String title,
 			Integer publishYear,
 			Integer pages,
 			String language,
-			String genre
+			String genre,
+			double compensation
 			) 
 	{
 		super();
@@ -29,6 +34,9 @@ public class BookDTO {
 		this.pages = pages;
 		this.language = language;
 		this.genre = genre;
+		
+		DecimalFormat formatCompensation = new DecimalFormat("0.00");
+		this.compensation = Double.parseDouble(formatCompensation.format(compensation).replace(",", "."));
 	}
 
 	public String getIsbn() {
@@ -79,13 +87,13 @@ public class BookDTO {
 		this.genre = genre;
 	}
 
-	
-	@Override
-	public String toString() {
-		return "BookDTO [isbn=" + isbn + ", title=" + title + ", publishYear=" + publishYear + ", pages=" + pages
-				+ ", language=" + language + ", genre=" + genre + "]";
+	public double getCompensation() {
+		return compensation;
 	}
-	
+
+	public void setCompensation(double compensation) {
+		this.compensation = compensation;
+	}
 	
 	
 }
