@@ -36,7 +36,10 @@ public class AppService {
 		{
 			Book currentBook = bookList.get(index);
 			
-			Double compensation = compensation(currentBook.getPages(),currentBook.getPublishYear(),currentBook.getLanguage());
+			Double compensation = compensation(	currentBook.getPages(),
+												currentBook.getPublishYear(),
+												currentBook.getLanguage()
+												);
 			
 			BookDTO currentBookDTO = new BookDTO(currentBook.getIsbn(),
 												 currentBook.getTitle(),
@@ -73,34 +76,57 @@ public class AppService {
 			{
 				if(isbnValidator(isbn) == true)
 				{
-					
-					RestTemplate rt = new RestTemplate();
-					OpenLib openLib = rt.getForObject("https://openlibrary.org/search.json?isbn=" + isbn, OpenLib.class);
-					
-					if(openLib.getDocs().size() > 0)
+					if((publishYear == null) || (pages == null) || (language.isEmpty() == true))
 					{
-						OpenLibData openLibDataList = openLib.getDocs().get(0);
-						Integer OpenLibFirstPublishYear = openLibDataList.getFirst_publish_year();
-						Integer OpenLibNumberOfPagesMedian = openLibDataList.getNumber_of_pages_median();
-						String OpenLibPublisher = openLibDataList.getPublisher().get(0);
-						String OpenLibLanguage = openLibDataList.getLanguage().get(0);
+						RestTemplate rt = new RestTemplate();
+						OpenLib openLib = rt.getForObject("https://openlibrary.org/search.json?isbn=" + isbn, OpenLib.class);
+						
+						Integer openLibFirstPublishYear = null;
+						Integer openLibNumberOfPagesMedian = null;
+						String openLibPublisher = "";
+						String openLibLanguage = "";
+						
+						if(openLib.getDocs().size() > 0)
+						{
+							OpenLibData openLibDataList = openLib.getDocs().get(0);
+							
+							openLibFirstPublishYear = openLibDataList.getFirst_publish_year();
+							openLibNumberOfPagesMedian = openLibDataList.getNumber_of_pages_median();
+							openLibPublisher = openLibDataList.getPublisher().get(0);
+							openLibLanguage = openLibDataList.getLanguage().get(0);
+							
+						}
+						
+						Book book = new Book(	isbn,
+												title,
+												openLibFirstPublishYear,
+												openLibNumberOfPagesMedian,
+												openLibLanguage,
+												genre
+												);
+						
+						result = true;
+						message = "Successfully registered!";
+						
+						db.registerABook(book);
+					
 					}
-					
-					Book book = new Book(	isbn,
-											title,
-											publishYear,
-											pages,
-											language,
-											genre
-											);
-					
-					result = true;
-					message = "The book has been successfully registered!";
-					
-					
-					System.out.println(compensation(pages, publishYear, language));
-					
-					db.registerABook(book);
+					else
+					{
+						Book book = new Book(	isbn,
+												title,
+												publishYear,
+												pages,
+												language,
+												genre
+												);
+						
+						result = true;
+						message = "Successfully registered!";
+						
+						db.registerABook(book);
+					}
+						
 				}
 				else
 				{
@@ -128,9 +154,11 @@ public class AppService {
 		}
 		catch(org.hibernate.exception.ConstraintViolationException e)
 		{
-			message ="ISBN number is alredy registered!";
+			message ="ISBN number is already registered!";
 			
-			resultDTO = new ResultDTO(null,false,false,message);
+			ResultDTO bookListResultDTO = getBooks();
+			BookListDTO bookListDTO = bookListResultDTO.getBookListDTO();
+			resultDTO = new ResultDTO(bookListDTO,false,true,message);
 		}
 		
 		return resultDTO;

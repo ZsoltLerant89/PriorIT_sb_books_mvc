@@ -3,68 +3,78 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Index</title>
-		<style>
-			table 
-			{
-			  border-collapse: collapse;
-			  width: 100%;
-			}
-			
-			th, td 
-			{
-			  padding: 8px;
-			  text-align: left;
-			  border-bottom: 1px solid #DDD;
-			}
-			
-			tr:hover {background-color: #D6EEEE;}
-		</style>
+	
+		<link th:href="@{/css/style.css}" rel="stylesheet" />	
+		<script th:src="@{/js/script.js}"> </script>
 	</head>
 	<body>
-		
-		<form action="/index/register">
-			<h2>Registering a book:</h2>
-			<div th:if="${resultDTO.getMessage() != null}">
-				<h4 style="color:red;" th:text="${resultDTO.getMessage()}"></h4>
+			<div class="bookreg">
+				<h2>Book registration</h2>
 			</div>
-			<h3>ISBN:<sup>*</sup></h3>
-			<input type="text" placeholder="9456879458145" name="isbn" />
-			<h3>Title:<sup>*</sup></h3>
-			<input type="text" name="title" />
-			<h3>Publish Year:</h3>
-			<input type="number" placeholder="2024" name="publishyear" />
-			<h3>Pages:</h3>
-			<input type="number" name="pages" />
-			<h3>Language:</h3>
-			<input type="text" placeholder="de" name="language" />
-			<h3>Genre:</h3>
-			<input type="text" name="genre" />
-			<br/><br/>
-			<input type="submit" value="Register" />
-		</form>
-		<br/>
-		<h2> Registered books: </h2>
-		
-		<table th:if="${resultDTO.isAllBooksResult() == true}">
-			<tr>
-				<th>ISBN Name</th>
-				<th>Title</th>
-				<th>Publish Year</th>
-				<th>Pages</th>
-				<th>Language</th>
-				<th>Genre</th>
-				<th>Compensation</th>
-			</tr>
-			<tr th:each="book : ${resultDTO.getBookListDTO().getBooks()}">
-				<td th:text="${book.getIsbn()}"></td>
-				<td th:text="${book.getTitle()}"></td>
-				<td th:text="${book.getPublishYear()}"></td>
-				<td th:text="${book.getPages()}"></td>
-				<td th:text="${book.getLanguage()}"></td>
-				<td th:text="${book.getGenre()}"></td>
-				<td th:text="${book.getCompensation()}"></td>
-			</tr>
-		</table>
-		
+			<div class="secondrow">
+				
+				<div class="form">
+					<form action="/index/register">
+						
+						<div th:if="${resultDTO.getMessage() != null}">
+							<h4 class="errorMessage" th:text="${resultDTO.getMessage()}"></h4>
+						</div>
+						<div class="fields">
+							<h3>ISBN:<sup>*</sup></h3>
+							<input type="text" id="isbn"  placeholder="9456879458145" name="isbn" />
+						</div>
+						<div class="fields">
+							<h3>Title:<sup>*</sup></h3>
+							<input type="text" name="title" />
+						</div>
+						<div class="fields">
+							<h3>Publish Year:</h3>
+							<input type="number" placeholder="2024" name="publishyear" />
+						</div>
+						<div class="fields">
+							<h3>Pages:</h3>
+							<input type="number" name="pages" />
+						</div>
+						<div class="fields">
+							<h3>Language:</h3>
+							<input type="text" placeholder="de" name="language" />
+						</div>
+						<div class="fields">
+							<h3>Genre:</h3>
+							<input type="text" name="genre" />
+						</div>
+						<br/>
+						<div style="text-align: center;">
+							<input id="submit" type="submit" value="Register" />
+						</div>
+					</form>
+				</div>
+	
+			</div>
+			<br/>
+			<div class="table">
+				<h2 class="h2regd"> Registered books </h2>
+				
+				<table th:if="${resultDTO.isAllBooksResult() == true}">
+					<tr>
+						<th>ISBN Name</th>
+						<th>Title</th>
+						<th>Publish Year</th>
+						<th>Pages</th>
+						<th>Language</th>
+						<th>Genre</th>
+						<th>Compensation</th>
+					</tr>
+					<tr class="hoverTr" th:each="book : ${resultDTO.getBookListDTO().getBooks()}">
+						<td th:text="${book.getIsbn()}"></td>
+						<td th:text="${book.getTitle()}"></td>
+						<td th:text="${book.getPublishYear()}"></td>
+						<td th:text="${book.getPages()}"></td>
+						<td th:text="${book.getLanguage()}"></td>
+						<td th:text="${book.getGenre()}"></td>
+						<td th:text="'€ '+${book.getCompensation()}" class = "compensation"></td>
+					</tr>
+				</table>
+			</div>
 	</body>
 </html>
