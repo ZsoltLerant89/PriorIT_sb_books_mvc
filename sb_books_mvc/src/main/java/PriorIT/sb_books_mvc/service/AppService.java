@@ -26,11 +26,11 @@ public class AppService {
 		this.db = db;
 	}
 
-	public ResultDTO getBooks() {
+	public ResultDTO getBooks(Integer publishYear) {
 		
 		BookListDTO bookListDTO = new BookListDTO() ;
 		
-		List<Book> bookList = db.getBookList();
+		List<Book> bookList = db.getBookList(publishYear);
 		
 		for(int index = 0; index < bookList.size(); index++)
 		{
@@ -54,6 +54,8 @@ public class AppService {
 		}
 		
 		ResultDTO resultDTO = new ResultDTO(bookListDTO,true,true,null);
+		
+		resultDTO.setPublishYears(db.getPublishYears());
 		
 		return resultDTO;
 	}
@@ -95,21 +97,35 @@ public class AppService {
 							openLibPublisher = openLibDataList.getPublisher().get(0);
 							openLibLanguage = openLibDataList.getLanguage().get(0);
 							
+							Book book = new Book(	isbn,
+									title,
+									openLibFirstPublishYear,
+									openLibNumberOfPagesMedian,
+									openLibLanguage,
+									genre
+									);
+							
+							result = true;
+							message = "Successfully registered! The data has been updated from openlibrary.org!";
+							
+							db.registerABook(book);
+							
 						}
-						
-						Book book = new Book(	isbn,
-												title,
-												openLibFirstPublishYear,
-												openLibNumberOfPagesMedian,
-												openLibLanguage,
-												genre
-												);
-						
-						result = true;
-						message = "Successfully registered!";
-						
-						db.registerABook(book);
-					
+						else {
+							Book book = new Book(	isbn,
+									title,
+									publishYear,
+									pages,
+									language,
+									genre
+									);	
+							
+							result = true;
+							message = "Successfully registered!";
+							
+							db.registerABook(book);
+						}
+			
 					}
 					else
 					{
@@ -139,7 +155,7 @@ public class AppService {
 			}
 			
 			
-			ResultDTO bookListResultDTO = getBooks();
+			ResultDTO bookListResultDTO = getBooks(null);
 			
 			if(bookListResultDTO.isAllBooksResult() == true)
 			{
@@ -156,7 +172,7 @@ public class AppService {
 		{
 			message ="ISBN number is already registered!";
 			
-			ResultDTO bookListResultDTO = getBooks();
+			ResultDTO bookListResultDTO = getBooks(null);
 			BookListDTO bookListDTO = bookListResultDTO.getBookListDTO();
 			resultDTO = new ResultDTO(bookListDTO,false,true,message);
 		}
@@ -250,6 +266,11 @@ public class AppService {
 		}
 		
 		return compensation;
+	}
+
+	public ResultDTO getBooksByYear(int publishYear) {
+		
+		return null;
 	}
 	
 	

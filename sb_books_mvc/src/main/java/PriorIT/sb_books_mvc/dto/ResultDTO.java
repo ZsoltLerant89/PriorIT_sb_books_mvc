@@ -1,12 +1,17 @@
 package PriorIT.sb_books_mvc.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.catalina.Contained;
+
 public class ResultDTO {
 
 	private BookListDTO bookListDTO;
 	private boolean registrationResult;
 	private boolean allBooksResult;
 	private String message;
-	
+	private List<Integer> publishYears ;
 	
 	public ResultDTO(BookListDTO bookListDTO, boolean registrationResult, boolean allBooksResult, String message) {
 		super();
@@ -14,6 +19,7 @@ public class ResultDTO {
 		this.registrationResult = registrationResult;
 		this.allBooksResult = allBooksResult;
 		this.message = message;
+		this.publishYears = new ArrayList<>();
 	}
 	
 	
@@ -41,11 +47,13 @@ public class ResultDTO {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	
-	
-	
-	
-	
-	
+
+	public List<Integer> getPublishYears() {
+		return publishYears;
+	}
+
+	public void setPublishYears(List<Integer> publishYears) {
+		this.publishYears = publishYears;
+	}
 	
 }

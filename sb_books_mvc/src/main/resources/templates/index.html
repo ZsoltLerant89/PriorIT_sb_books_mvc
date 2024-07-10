@@ -16,7 +16,7 @@
 				<div class="form">
 					<form action="/index/register">
 						
-						<div th:if="${resultDTO.getMessage() != null}">
+						<div class="fields" th:if="${resultDTO.getMessage() != null}">
 							<h4 class="errorMessage" th:text="${resultDTO.getMessage()}"></h4>
 						</div>
 						<div class="fields">
@@ -54,6 +54,37 @@
 			<br/>
 			<div class="table">
 				<h2 class="h2regd"> Registered books </h2>
+				
+				<table class="sortingtable">
+					<tr>
+						<th class="sortingTh"> Sorting </th>
+						<th class="sortingTh">
+							<form action="/index">
+								<input class="resetSorting" type="submit" value="Reset" />
+							</form>
+						</th>
+					<tr>
+					<tr class="sortingTableTr">
+						<td class="sortingTableTd">
+							<form action="/index/getPublishYears" method="get">
+								<select onchange="this.form.submit()" name="publishYear">
+									<option>Publish Year</option>
+								    	<option  th:each = "publishYear : ${resultDTO.getPublishYears()}" th:value="${publishYear}" th:text="${publishYear}"></option>
+								</select>
+						
+							</form>
+							
+						</td>
+						<td class="sortingTableTd">
+							<form class="secondForm" action="" method="post" >
+								<select name="language">
+									<option>Language</option>
+								    <option>de</option>
+								</select>
+							</form>
+						</td>
+					</tr>
+				</table>
 				
 				<table th:if="${resultDTO.isAllBooksResult() == true}">
 					<tr>

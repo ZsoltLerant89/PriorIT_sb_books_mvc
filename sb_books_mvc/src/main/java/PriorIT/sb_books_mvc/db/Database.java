@@ -28,18 +28,29 @@ public class Database {
 		this.sessionFactory.close();
 	}
 
-	public List<Book> getBookList() {
+	public List<Book> getBookList(Integer publishYear) {
+		List<Book> bookList = null;
 		
 		Session session = sessionFactory.openSession();
 		Transaction tx = session.beginTransaction();
 		
-		SelectionQuery<Book> query = session.createSelectionQuery("SELECT b FROM Book b",Book.class);
-		List<Book> bookList = query.getResultList();
+		if (publishYear == null)
+		{
+			SelectionQuery<Book> query = session.createSelectionQuery("SELECT b FROM Book b",Book.class);
+			bookList = query.getResultList();
+		}
+		else
+		{
+			SelectionQuery<Book> query = session.createSelectionQuery("SELECT b FROM Book b WHERE b.publishYear=?1",Book.class);
+			query.setParameter(1, publishYear);
+			bookList = query.getResultList();
+		}
 		
 		tx.commit();
 		session.close();
 		
 		return bookList;
+		
 	}
 
 	public void registerABook(Book book) {
@@ -52,6 +63,22 @@ public class Database {
 		tx.commit();
 		session.close();
 		
+	}
+	 
+	public List<Integer> getPublishYears()
+	{
+		List<Integer> publishYears = null;
+		
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+		
+		SelectionQuery<Integer> query = session.createSelectionQuery("SELECT b.publishYear FROM Book b WHERE b.publishYear IS NOT NULL GROUP BY b.publishYear ORDER BY b.publishYear ASC",Integer.class);
+		publishYears = query.getResultList();
+		
+		tx.commit();
+		session.close();
+		
+		return publishYears;
 	}
 	
 	

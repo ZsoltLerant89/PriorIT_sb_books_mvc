@@ -24,7 +24,7 @@ public class AppController {
 	@GetMapping("/index")
 	private String loadIndex(Model model)
 	{
-		ResultDTO resultDTO = service.getBooks();
+		ResultDTO resultDTO = service.getBooks(null);
 		model.addAttribute("resultDTO", resultDTO );
 		
 		return "index.html";
@@ -50,6 +50,18 @@ public class AppController {
 												genre
 												);
 		
+		model.addAttribute("resultDTO", resultDTO );
+		
+		return "index.html";
+	}
+	
+	@GetMapping("/index/getPublishYears")
+	private String getPublishYears(
+									Model model,
+									@RequestParam("publishYear") int publishYear
+									)
+	{
+		ResultDTO resultDTO = service.getBooks(publishYear);
 		model.addAttribute("resultDTO", resultDTO );
 		
 		return "index.html";
