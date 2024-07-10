@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Index</title>
+		<title>Books</title>
 	
 		<link th:href="@{/css/style.css}" rel="stylesheet" />	
 		<script th:src="@{/js/script.js}"> </script>
@@ -14,18 +14,18 @@
 			<div class="secondrow">
 				
 				<div class="form">
-					<form action="/index/register">
+					<form action="/books/register">
 						
 						<div class="fields" th:if="${resultDTO.getMessage() != null}">
 							<h4 class="errorMessage" th:text="${resultDTO.getMessage()}"></h4>
 						</div>
 						<div class="fields">
 							<h3>ISBN:<sup>*</sup></h3>
-							<input type="text" id="isbn"  placeholder="9456879458145" name="isbn" />
+							<input type="text" id="isbn"  placeholder="9456879458145" name="isbn" required />
 						</div>
 						<div class="fields">
 							<h3>Title:<sup>*</sup></h3>
-							<input type="text" name="title" />
+							<input type="text" name="title" required />
 						</div>
 						<div class="fields">
 							<h3>Publish Year:</h3>
@@ -59,14 +59,14 @@
 					<tr>
 						<th class="sortingTh"> Sorting </th>
 						<th class="sortingTh">
-							<form action="/index">
+							<form action="/books">
 								<input class="resetSorting" type="submit" value="Reset" />
 							</form>
 						</th>
 					<tr>
 					<tr class="sortingTableTr">
 						<td class="sortingTableTd">
-							<form action="/index/getPublishYears" method="get">
+							<form action="/books/publishyears" method="get">
 								<select onchange="this.form.submit()" name="publishYear">
 									<option>Publish Year</option>
 								    	<option  th:each = "publishYear : ${resultDTO.getPublishYears()}" th:value="${publishYear}" th:text="${publishYear}"></option>
@@ -76,10 +76,10 @@
 							
 						</td>
 						<td class="sortingTableTd">
-							<form class="secondForm" action="" method="post" >
-								<select name="language">
+							<form class="secondForm" action="/books/languages" method="get" >
+								<select onchange="this.form.submit()" name="language">
 									<option>Language</option>
-								    <option>de</option>
+								    <option th:each = "language : ${resultDTO.getLanguages()}" th:value="${language}" th:text="${language}"></option>
 								</select>
 							</form>
 						</td>

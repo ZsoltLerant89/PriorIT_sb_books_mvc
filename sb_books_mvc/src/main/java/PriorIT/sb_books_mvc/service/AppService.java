@@ -26,11 +26,11 @@ public class AppService {
 		this.db = db;
 	}
 
-	public ResultDTO getBooks(Integer publishYear) {
+	public ResultDTO getBooks(Integer publishYear, String language) {
 		
 		BookListDTO bookListDTO = new BookListDTO() ;
 		
-		List<Book> bookList = db.getBookList(publishYear);
+		List<Book> bookList = db.getBookList(publishYear,language);
 		
 		for(int index = 0; index < bookList.size(); index++)
 		{
@@ -56,6 +56,7 @@ public class AppService {
 		ResultDTO resultDTO = new ResultDTO(bookListDTO,true,true,null);
 		
 		resultDTO.setPublishYears(db.getPublishYears());
+		resultDTO.setLanguages(db.getLanguages());
 		
 		return resultDTO;
 	}
@@ -155,7 +156,7 @@ public class AppService {
 			}
 			
 			
-			ResultDTO bookListResultDTO = getBooks(null);
+			ResultDTO bookListResultDTO = getBooks(null,null);
 			
 			if(bookListResultDTO.isAllBooksResult() == true)
 			{
@@ -172,7 +173,7 @@ public class AppService {
 		{
 			message ="ISBN number is already registered!";
 			
-			ResultDTO bookListResultDTO = getBooks(null);
+			ResultDTO bookListResultDTO = getBooks(null,null);
 			BookListDTO bookListDTO = bookListResultDTO.getBookListDTO();
 			resultDTO = new ResultDTO(bookListDTO,false,true,message);
 		}
@@ -201,7 +202,7 @@ public class AppService {
 	private boolean isEmpty(String input)
 	{
 		boolean result = false;
-		if(input.length() == 0)
+		if((input != null) && (input.length() == 0))
 		{
 			result = true;
 		}
@@ -267,11 +268,5 @@ public class AppService {
 		
 		return compensation;
 	}
-
-	public ResultDTO getBooksByYear(int publishYear) {
-		
-		return null;
-	}
-	
 	
 }

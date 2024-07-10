@@ -28,21 +28,27 @@ public class Database {
 		this.sessionFactory.close();
 	}
 
-	public List<Book> getBookList(Integer publishYear) {
+	public List<Book> getBookList(Integer publishYear, String language) {
 		List<Book> bookList = null;
 		
 		Session session = sessionFactory.openSession();
 		Transaction tx = session.beginTransaction();
 		
-		if (publishYear == null)
+		if (publishYear == null && language == null)
 		{
 			SelectionQuery<Book> query = session.createSelectionQuery("SELECT b FROM Book b",Book.class);
 			bookList = query.getResultList();
 		}
-		else
+		else if(publishYear != null && language == null)
 		{
 			SelectionQuery<Book> query = session.createSelectionQuery("SELECT b FROM Book b WHERE b.publishYear=?1",Book.class);
 			query.setParameter(1, publishYear);
+			bookList = query.getResultList();
+		}
+		else if (publishYear == null && language != null)
+		{
+			SelectionQuery<Book> query = session.createSelectionQuery("SELECT b FROM Book b WHERE b.language=?1",Book.class);
+			query.setParameter(1, language);
 			bookList = query.getResultList();
 		}
 		
@@ -81,6 +87,21 @@ public class Database {
 		return publishYears;
 	}
 	
+	public List<String> getLanguages()
+	{
+		List<String> languages = null;
+		
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+		
+		SelectionQuery<String> query = session.createSelectionQuery("SELECT b.language FROM Book b WHERE (b.language IS NOT NULL) AND (LENGTH(b.language) > 0) GROUP BY b.language ORDER BY b.language ASC",String.class);
+		languages = query.getResultList();
+		
+		tx.commit();
+		session.close();
+		
+		return languages;
+	}
 	
 
 }

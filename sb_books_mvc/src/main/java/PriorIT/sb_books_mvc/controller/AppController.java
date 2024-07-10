@@ -21,17 +21,17 @@ public class AppController {
 		this.service = service;
 	}
 	
-	@GetMapping("/index")
-	private String loadIndex(Model model)
+	@GetMapping("/books")
+	public String loadIndex(Model model)
 	{
-		ResultDTO resultDTO = service.getBooks(null);
+		ResultDTO resultDTO = service.getBooks(null,null);
 		model.addAttribute("resultDTO", resultDTO );
 		
 		return "index.html";
 	}
 	
-	@GetMapping("/index/register")
-	private String register(
+	@GetMapping("/books/register")
+	public String register(
 							Model model,
 							@RequestParam(name = "isbn",required = true ) String isbn,
 							@RequestParam(name = "title", required = true) String title,
@@ -55,13 +55,25 @@ public class AppController {
 		return "index.html";
 	}
 	
-	@GetMapping("/index/getPublishYears")
-	private String getPublishYears(
+	@GetMapping("/books/publishyears")
+	public String getPublishYears(
 									Model model,
 									@RequestParam("publishYear") int publishYear
 									)
 	{
-		ResultDTO resultDTO = service.getBooks(publishYear);
+		ResultDTO resultDTO = service.getBooks(publishYear,null);
+		model.addAttribute("resultDTO", resultDTO );
+		
+		return "index.html";
+	}
+	
+	@GetMapping("/books/languages")
+	public String getLanguages(
+								Model model,
+								@RequestParam("language") String language
+								)
+	{
+		ResultDTO resultDTO = service.getBooks(null, language);
 		model.addAttribute("resultDTO", resultDTO );
 		
 		return "index.html";
