@@ -10,6 +10,6 @@ FROM openjdk:17-jdk-slim
 
 EXPOSE 8080
 
-COPY --from=build /target/sb_treasurehunter_mvc-1.jar app.jar
+COPY --from=build /target/pti_sb_books_mvc-1.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
