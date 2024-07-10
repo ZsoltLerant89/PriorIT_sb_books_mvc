@@ -7,10 +7,16 @@
 	
 		<!-- Database connection settings --> 
 		<property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property> 
+		<property name="connection.url">jdbc:mysql://postgresql://dpg-cq7g7i3v2p9s73c46il0-a/prioritbooksdb</property> 
+		<property name="connection.username">root</property> 
+		<property name="connection.password">za21h95IVlxQNqVPNU4JSZDdgc22POuB</property>
+		
+<!--	
+		<property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property> 
 		<property name="connection.url">jdbc:mysql://localhost:3306/bookdb</property> 
 		<property name="connection.username">root</property> 
-		<property name="connection.password">root</property>
-		
+		<property name="connection.password">root</property> 
+-->
 		
 		<mapping class="PriorIT.sb_books_mvc.model.Book" />
 			
