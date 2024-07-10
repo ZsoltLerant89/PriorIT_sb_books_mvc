@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>PriorIT</groupId>
 	<artifactId>sb_books_mvc</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1</version>
 	<name>sb_books_mvc</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
