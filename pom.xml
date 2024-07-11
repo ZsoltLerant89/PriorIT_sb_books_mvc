@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>PriorIT</groupId>
-	<artifactId>sb_books_mvc</artifactId>
+	<artifactId>PriorIT_sb_books_mvc</artifactId>
 	<version>1</version>
-	<name>sb_books_mvc</name>
+	<name>PriorIT_sb_books_mvc</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
@@ -44,6 +44,15 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+	
+		
+		<dependency>
+	        <groupId>org.postgresql</groupId>
+	        <artifactId>postgresql</artifactId>   
+	        <scope>runtime</scope>   
+    	</dependency>
+		
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

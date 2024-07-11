@@ -2,11 +2,13 @@
 <!DOCTYPE hibernate-configuration PUBLIC
 "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
 <hibernate-configuration>
 	<session-factory>
 	
 		<!-- Database connection settings --> 
-		<property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property> 
+	 
+		<property name="connection.driver_class">org.postgresql.Driver</property>
 		<property name="connection.url">jdbc:postgresql://dpg-cq7pd4lds78s73db80v0-a/render_postgresql_5dz4</property> 
 		<property name="connection.username">root</property> 
 		<property name="connection.password">INDCikTJ0dCHd1H5ErK5pkSLZq2ER7nN</property>
