@@ -21,7 +21,7 @@ public class AppController {
 		this.service = service;
 	}
 	
-	@GetMapping("/books")
+	@GetMapping("/")
 	public String loadIndex(Model model)
 	{
 		ResultDTO resultDTO = service.getBooks(null,null);
