@@ -208,6 +208,9 @@ public class AppService {
 										);
 		}
 		
+		resultDTO.setPublishYears(db.getPublishYears());
+		resultDTO.setLanguages(db.getLanguages());
+		
 		return resultDTO;
 	}
 	
