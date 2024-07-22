@@ -23,28 +23,27 @@ public class Database {
 		this.sessionFactory = cfg.buildSessionFactory();
 	}
 	
-	public void closeDb()
-	{
-		this.sessionFactory.close();
-	}
-
+	/*Get books with or without sorting.*/
 	public List<Book> getBookList(Integer publishYear, String language) {
 		List<Book> bookList = null;
 		
 		Session session = sessionFactory.openSession();
 		Transaction tx = session.beginTransaction();
 		
+		/* Get all registered books (if there is no sorting condition). */
 		if (publishYear == null && language == null)
 		{
 			SelectionQuery<Book> query = session.createSelectionQuery("SELECT b FROM Book b",Book.class);
 			bookList = query.getResultList();
 		}
+		/* Get all books sorting by publish year. */
 		else if(publishYear != null && language == null)
 		{
 			SelectionQuery<Book> query = session.createSelectionQuery("SELECT b FROM Book b WHERE b.publishYear=?1",Book.class);
 			query.setParameter(1, publishYear);
 			bookList = query.getResultList();
 		}
+		/* Get all books sorting by language. */
 		else if (publishYear == null && language != null)
 		{
 			SelectionQuery<Book> query = session.createSelectionQuery("SELECT b FROM Book b WHERE b.language=?1",Book.class);
@@ -70,7 +69,11 @@ public class Database {
 		session.close();
 		
 	}
-	 
+	
+	/* Get publish years, where:
+	 * - they are not NULL and
+	 * - ensuring each year appears only once and 
+	 * - order them alphabetically.   */ 
 	public List<Integer> getPublishYears()
 	{
 		List<Integer> publishYears = null;
@@ -87,6 +90,11 @@ public class Database {
 		return publishYears;
 	}
 	
+	/*Get languages, where:
+	 * - they are not NULL and
+	 * - they are not empty and
+	 * - ensuring each language appears only once and 
+	 * - order them alphabetically.*/
 	public List<String> getLanguages()
 	{
 		List<String> languages = null;

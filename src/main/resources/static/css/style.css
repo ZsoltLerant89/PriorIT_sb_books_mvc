@@ -3,7 +3,6 @@
 table {
   	border-collapse: collapse;
  	width: 100%;
- 	color: 
 }
 
 th, td {
@@ -50,7 +49,7 @@ h3{
 
 .sortingtable{
 	width: 8%;
-	margin-left: 86.5%;
+	text-align: right;
 }
 
 .sortingTableTr, .sortingTableTd{

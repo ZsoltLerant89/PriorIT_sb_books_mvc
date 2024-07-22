@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import PriorIT.sb_books_mvc.dto.ResultDTO;
@@ -30,7 +31,8 @@ public class AppController {
 		return "index.html";
 	}
 	
-	@GetMapping("/books/register")
+	/* Register a book */
+	@PostMapping("/books/register")
 	public String register(
 							Model model,
 							@RequestParam(name = "isbn",required = true ) String isbn,
@@ -55,6 +57,7 @@ public class AppController {
 		return "index.html";
 	}
 	
+	/*Sorting by publish year*/
 	@GetMapping("/books/publishyears")
 	public String getPublishYears(
 									Model model,
@@ -67,6 +70,7 @@ public class AppController {
 		return "index.html";
 	}
 	
+	/*Sorting by languages*/
 	@GetMapping("/books/languages")
 	public String getLanguages(
 								Model model,

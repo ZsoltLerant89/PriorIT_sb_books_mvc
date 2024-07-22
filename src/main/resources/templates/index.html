@@ -5,7 +5,6 @@
 		<title>Books</title>
 	
 		<link th:href="@{/css/style.css}" rel="stylesheet" />	
-		<script th:src="@{/js/script.js}"> </script>
 	</head>
 	<body>
 			<div class="bookreg">
@@ -14,7 +13,7 @@
 			<div class="secondrow">
 				
 				<div class="form">
-					<form action="/books/register">
+					<form action="/books/register" method="post">
 						
 						<div class="fields" th:if="${resultDTO.getMessage() != null}">
 							<h4 class="errorMessage" th:text="${resultDTO.getMessage()}"></h4>
@@ -55,7 +54,7 @@
 			<div class="table">
 				<h2 class="h2regd"> Registered books </h2>
 				
-				<table class="sortingtable">
+				<table class="sortingtable" align="right">
 					<tr>
 						<th class="sortingTh"> Sorting </th>
 						<th class="sortingTh">

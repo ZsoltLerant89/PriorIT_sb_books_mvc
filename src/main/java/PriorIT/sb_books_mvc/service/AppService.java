@@ -53,7 +53,11 @@ public class AppService {
 			bookListDTO.addToBooks(currentBookDTO);
 		}
 		
-		ResultDTO resultDTO = new ResultDTO(bookListDTO,true,true,null);
+		ResultDTO resultDTO = new ResultDTO(bookListDTO,
+											true,
+											true,
+											null
+											);
 		
 		resultDTO.setPublishYears(db.getPublishYears());
 		resultDTO.setLanguages(db.getLanguages());
@@ -74,19 +78,29 @@ public class AppService {
 		ResultDTO resultDTO = null;
 		
 		try {
-		
+			/*Check ISBN and title length.*/
 			if((isEmpty(isbn) == false) && (isEmpty(title) == false))
 			{
+				/*Check if the ISBN number is valid.*/
 				if(isbnValidator(isbn) == true)
 				{
-					if((publishYear == null) || (pages == null) || (language.isEmpty() == true))
+					/*Get date from openlibrary.org if:
+					 * - publish year is null or  
+					 * - pages is null or
+					 * - the language is empty. */
+					if( (publishYear == null) || 
+						(pages == null) || 
+						(isEmpty(language) == true)
+						)
 					{
 						RestTemplate rt = new RestTemplate();
 						OpenLib openLib = rt.getForObject("https://openlibrary.org/search.json?isbn=" + isbn, OpenLib.class);
 						
 						Integer openLibFirstPublishYear = null;
 						Integer openLibNumberOfPagesMedian = null;
-						String openLibPublisher = "";
+						
+						/** I encountered a contradiction at the beginning and the end of the task, this is why i am not using line 103. */
+//						String openLibPublisher = "";
 						String openLibLanguage = "";
 						
 						if(openLib.getDocs().size() > 0)
@@ -95,16 +109,18 @@ public class AppService {
 							
 							openLibFirstPublishYear = openLibDataList.getFirst_publish_year();
 							openLibNumberOfPagesMedian = openLibDataList.getNumber_of_pages_median();
-							openLibPublisher = openLibDataList.getPublisher().get(0);
+							
+							/** I encountered a contradiction at the beginning and the end of the task, this is why i am not using line 114. */
+//							openLibPublisher = openLibDataList.getPublisher().get(0); 
 							openLibLanguage = openLibDataList.getLanguage().get(0);
 							
-							Book book = new Book(	isbn,
-									title,
-									openLibFirstPublishYear,
-									openLibNumberOfPagesMedian,
-									openLibLanguage,
-									genre
-									);
+							Book book = new Book(isbn,
+												 title,
+												 openLibFirstPublishYear,
+												 openLibNumberOfPagesMedian,
+												 openLibLanguage,
+												 genre
+												 );
 							
 							result = true;
 							message = "Successfully registered! The data has been updated from openlibrary.org!";
@@ -113,13 +129,13 @@ public class AppService {
 							
 						}
 						else {
-							Book book = new Book(	isbn,
-									title,
-									publishYear,
-									pages,
-									language,
-									genre
-									);	
+							Book book = new Book(isbn,
+												 title,
+												 publishYear,
+												 pages,
+												 language,
+												 genre
+												 );	
 							
 							result = true;
 							message = "Successfully registered!";
@@ -130,13 +146,13 @@ public class AppService {
 					}
 					else
 					{
-						Book book = new Book(	isbn,
-												title,
-												publishYear,
-												pages,
-												language,
-												genre
-												);
+						Book book = new Book(isbn,
+											 title,
+											 publishYear,
+											 pages,
+											 language,
+											 genre
+											 );
 						
 						result = true;
 						message = "Successfully registered!";
@@ -162,26 +178,51 @@ public class AppService {
 			{
 				BookListDTO bookListDTO = bookListResultDTO.getBookListDTO();
 				
-				resultDTO = new ResultDTO(bookListDTO,result,true,message);
+				resultDTO = new ResultDTO(	bookListDTO,
+											result,
+											true,
+											message
+											);
 			}
 			else
 			{
-				resultDTO = new ResultDTO(null,result,false,bookListResultDTO.getMessage());
+				resultDTO = new ResultDTO(	null,
+											result,
+											false,
+											bookListResultDTO.getMessage()
+											);
 			}
 		}
 		catch(org.hibernate.exception.ConstraintViolationException e)
 		{
 			message ="ISBN number is already registered!";
 			
+			/*Get all books*/
 			ResultDTO bookListResultDTO = getBooks(null,null);
 			BookListDTO bookListDTO = bookListResultDTO.getBookListDTO();
-			resultDTO = new ResultDTO(bookListDTO,false,true,message);
+			
+			resultDTO = new ResultDTO(	bookListDTO,
+										false,
+										true,
+										message
+										);
 		}
 		
 		return resultDTO;
 	}
 	
-	
+	/** Check if the ISBN number length  is valid. */
+	/**
+	 * 
+	 * @param input
+	 * This is the String what we check.
+	 * @return
+	 * 	false: 	- not 10 or 13 characters long or
+	 * 			- we can not make a Long from that String
+	 * 	true: 	This is a correct String because:
+	 * 			- 10 or 13 characters long and
+	 * 			- we can made a Long from that String
+	 */
 	private boolean isbnValidator(String isbn)
 	{
 		boolean result = false;
@@ -199,6 +240,15 @@ public class AppService {
 		return result;
 	}
 	
+	/** Check if the String is empty.*/
+	/**
+	 * 
+	 * @param input
+	 * 	This is the String what we check.
+	 * @return
+	 * 	false: String length > 0
+	 * 	true: String length == 0 (String is empty)
+	 */
 	private boolean isEmpty(String input)
 	{
 		boolean result = false;
@@ -210,6 +260,7 @@ public class AppService {
 		return result;
 	}
 	
+	/* Get the factor from page numbers.*/
 	private double factor(int pages)
 	{
 		
@@ -243,6 +294,11 @@ public class AppService {
 		return factor;
 	}
 	
+	/* Calculating of compensation if we have:
+	 * 	- publish year and
+	 * 	- language and
+	 * 	- number of pages
+	 */
 	private double compensation(Integer pages, Integer publishYear, String language)
 	{
 		
